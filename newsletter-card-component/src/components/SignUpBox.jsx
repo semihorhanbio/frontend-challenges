@@ -1,22 +1,32 @@
 import { useState } from "react";
-import SubscribeButton from "./SubscribeButton";
-
 function NewsletterSignup() {
     const [email, setEmail] = useState("");
-    const [isValid, setIsValid] = useState(false);
+    const [isChecked, setIsChecked] = useState(false);
   
     const handleInputChange = (e) => {
-      const inputValue = e.target.value;
-      setEmail(inputValue);
-      setIsValid(e.target.checkValidity());
+      const { value } = e.target;
+      setEmail(value);
+    };
+  
+    const handleCheckboxChange = () => {
+      setIsChecked(!isChecked);
     };
   
     const handleSubmit = (e) => {
       e.preventDefault();
-      // Proceed with button logic when the form is submitted
-      if (isValid) {
-        console.log("Input is valid. Proceed with button logic.");
+  
+      if (email && isChecked) {
+        if (validateEmail(email)) {
+          alert("Email is valid and checkbox is checked!");
+        } else {
+          alert("Email is invalid!");
+        }
       }
+    };
+  
+    const validateEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
     };
 
   return (
@@ -39,12 +49,16 @@ function NewsletterSignup() {
                 onChange={handleInputChange}
                 required
             />
-            <SubscribeButton isValid={isValid}/>
+            <button 
+            className="text-white text-center text-2xl font-medium whitespace-nowrap justify-center items-stretch bg-gray-900 px-8 py-3 rounded-lg max-md:px-5 hover:bg-gray-700"
+            type="submit">Subscribe</button>
         </div>
         <div className="flex gap-3 mt-4 items-start max-md:max-w-full max-md:flex-wrap">
             <input
                 type="checkbox"
-                className="border border-gray-900 flex w-[21px] shrink-0 h-5 flex-col rounded-full border-solid"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+                className="border border-gray-900 flex w-[21px] shrink-0 h-5 rounded-full border-solid"
                 aria-label="Newsletter Subscription Checkbox"
                 name="newsletter"
                 id="newsletter"
